@@ -86,6 +86,15 @@ apt install -y nodejs
 echo "--- ตรวจ Node version ---"
 node -v
 npm -v
+
+echo "--- สร้าง hijack.js (network fix) ---"
+cat > /root/hijack.js << '"'"'EOF'"'"'
+const os = require("os");
+os.networkInterfaces = () => ({});
+EOF
+
+echo "--- เพิ่ม NODE_OPTIONS ใน .bashrc ---"
+grep -q "hijack.js" /root/.bashrc || echo '"'"'export NODE_OPTIONS="-r /root/hijack.js"'"'"' >> /root/.bashrc
 '
 
 ok "STEP 4 เสร็จ — Ubuntu + Node.js v22 พร้อม"
