@@ -48,6 +48,27 @@ ssh <username>@<ip> -p 8022
 
 ---
 
+## อัปเดตเครื่องที่ติดตั้งไปแล้ว
+
+รันใน Termux:
+
+```bash
+cd ~/Opennote8-Paji && bash update.sh
+```
+
+ถ้ายังไม่ได้ clone repo:
+
+```bash
+git clone https://github.com/zirz1911/Opennote8-Paji && cd Opennote8-Paji && bash update.sh
+```
+
+`update.sh` จะ:
+- ดึง update ล่าสุดจาก repo
+- อัปเดต `.bashrc` ของ Termux และ Ubuntu
+- Restart `sshd` ทันที
+
+---
+
 ## อ้างอิง
 
 - [คู่มือต้นฉบับ](https://ordershrimp.9aum.com/manual/4.install_openclaw_yourself.html)
