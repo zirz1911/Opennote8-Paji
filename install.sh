@@ -50,7 +50,13 @@ echo "openclaw" | passwd --stdin 2>/dev/null || \
   warn "ตั้งรหัสผ่านด้วยตัวเองด้วยคำสั่ง: passwd"
 
 ok "STEP 3 เสร็จ — รหัสผ่าน: openclaw"
-log "IP ของเครื่อง: $(ifconfig 2>/dev/null | grep 'inet ' | grep -v 127.0.0.1 | awk '{print $2}' | head -1)"
+echo ""
+echo -e "  ${CYAN}SSH Info:${NC}"
+echo -e "  user:     ${YELLOW}$(whoami)${NC}"
+echo -e "  IP:       ${YELLOW}$(ifconfig 2>/dev/null | grep 'inet ' | grep -v 127.0.0.1 | awk '{print $2}' | head -1)${NC}"
+echo -e "  port:     ${YELLOW}8022${NC}"
+echo -e "  password: ${YELLOW}openclaw${NC}"
+echo ""
 
 # ─────────────────────────────────────────────────────────────
 # STEP 4: ติดตั้ง Ubuntu + Node.js v22 ข้างใน
