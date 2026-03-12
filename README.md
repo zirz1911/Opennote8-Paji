@@ -62,6 +62,12 @@ cd ~/Opennote8-Paji && bash update.sh
 git clone https://github.com/zirz1911/Opennote8-Paji && cd Opennote8-Paji && bash update.sh
 ```
 
+ถ้า clone ไปแล้วแต่ไม่มี `update.sh` (clone ก่อนที่จะมีไฟล์นี้):
+
+```bash
+cd ~/Opennote8-Paji && git pull && bash update.sh
+```
+
 `update.sh` จะ:
 - ดึง update ล่าสุดจาก repo
 - อัปเดต `.bashrc` ของ Termux และ Ubuntu
