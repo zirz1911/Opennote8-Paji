@@ -1,2 +1,1 @@
-# Opennote8-Paji
-Openclaw on Note 8
+# Openclaw on Note 8
