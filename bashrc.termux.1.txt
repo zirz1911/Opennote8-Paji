@@ -1,1 +1,4 @@
+# Auto-start sshd every time Termux opens
+sshd 2>/dev/null || true
+
 proot-distro login ubuntu
