@@ -133,13 +133,23 @@ fi
 
 ok "STEP 5 เสร็จ — Openclaw ติดตั้งสำเร็จ 🎉"
 
+DEVICE_IP=$(ifconfig 2>/dev/null | grep 'inet ' | grep -v 127.0.0.1 | awk '{print $2}' | head -1)
+DEVICE_USER=$(whoami)
+
 echo ""
 echo -e "${GREEN}════════════════════════════════════════${NC}"
 echo -e "${GREEN}  ✓ ติดตั้ง Openclaw เสร็จสมบูรณ์!${NC}"
 echo -e "${GREEN}════════════════════════════════════════${NC}"
 echo ""
-echo -e "  เข้า Ubuntu:  ${CYAN}proot-distro login ubuntu${NC}"
-echo -e "  IP เครื่อง:   ${CYAN}$(ifconfig 2>/dev/null | grep 'inet ' | grep -v 127.0.0.1 | awk '{print $2}' | head -1)${NC}"
-echo -e "  SSH port:     ${CYAN}8022${NC}"
-echo -e "  รหัสผ่าน:     ${CYAN}openclaw${NC}"
+echo -e "  ${CYAN}SSH จากคอม:${NC}"
+echo -e "  ${YELLOW}ssh ${DEVICE_USER}@${DEVICE_IP} -p 8022${NC}"
+echo -e "  password: ${YELLOW}openclaw${NC}"
 echo ""
+echo -e "  ${CYAN}เข้า Ubuntu:${NC}"
+echo -e "  ${YELLOW}proot-distro login ubuntu${NC}"
+echo ""
+
+# รอ 3 วิ แล้วเข้า Ubuntu เลย
+echo -e "${CYAN}▶ เข้า Ubuntu อัตโนมัติใน 3 วินาที... (Ctrl+C เพื่อยกเลิก)${NC}"
+sleep 3
+proot-distro login ubuntu
