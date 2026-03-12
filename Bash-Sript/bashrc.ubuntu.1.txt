@@ -1,0 +1,30 @@
+
+# --- [ OpenClaw Smart Foreground Start ] ---
+
+# 1. เตรียมข้อมูลพื้นฐาน
+MY_IP=$(hostname -I | awk '{print $1}')
+
+# อ่าน Token จากไฟล์ JSON ตรงๆ (ใช้ grep และ sed เพื่อดึงค่าระหว่างเครื่องหมายคำพูด)
+OC_TOKEN=$(grep '"token":' ~/.openclaw/openclaw.json | head -n 1 | sed 's/.*"token": "\(.*\)".*/\1/')
+
+if ! pgrep -f "openclaw" > /dev/null; then
+    echo "🚀 [Main Session] Starting OpenClaw Gateway..."    
+    echo "💡 To stop OpenClaw, press Ctrl + C in this session."
+    echo "----------------------------------------------------"
+    
+    openclaw gateway --verbose
+else
+    # 2. ถ้ามี OpenClaw รันอยู่แล้ว (Session 2 เป็นต้นไป)
+    echo "ℹ️ OpenClaw is already running."
+    echo "💻 Session #2: Terminal is ready for commands."
+    
+    # ตรวจสอบว่าดึง Token มาได้ไหม
+    if [ -n "$OC_TOKEN" ]; then
+        echo "🔗 Web UI: http://127.0.0.1:18789/#token=$OC_TOKEN"
+    else
+        echo "🔗 Web UI: http://127.0.0.1:18789/"
+        echo "⚠️ Token not found in openclaw.json"
+    fi
+    echo "----------------------------------------------------"
+fi
+

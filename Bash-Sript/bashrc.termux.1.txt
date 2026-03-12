@@ -1,0 +1,75 @@
+# --- [ 1. Wake Lock & SSHD ] ---
+termux-wake-lock
+if ! pgrep -x "sshd" > /dev/null; then sshd; fi
+
+# --- [ 2. ดึงข้อมูลระบบแบบป้องกัน Error ] ---
+USER_NAME=$(whoami)
+# ดึง IP เฉพาะตัวเลขที่ถูกต้องเท่านั้น (แก้ปัญหาดึง IP ผิดบรรทัด)
+IP_ADDR=$(ip -4 addr show | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | grep -v '127.0.0.1' | head -n 1)
+# ดึง Token พร้อมดัก Error กรณีไฟล์ JSON พังหรือยังไม่มี
+OC_TOKEN=$(proot-distro login ubuntu -- sh -c "cat ~/.openclaw/openclaw.json 2>/dev/null | grep '\"token\":' | head -n 1 | sed 's/.*\"token\": \"\(.*\)\".*/\1/'")
+
+# --- [ 3. Conditional Logic ] ---
+if [ -z "$SSH_CONNECTION" ]; then
+    # --- กรณีเปิดในมือถือโดยตรง ---
+    SESSION_COUNT=$(pgrep -c "bash")
+    
+    if [ "$SESSION_COUNT" -le 1 ]; then
+        echo "📱 First Session: Preparing System..."
+        
+        # [🔥 เกราะชั้นที่ 1: ล้างไฟล์ผี Screen และ Lock ของ Ubuntu 🔥]
+        if ! pgrep -x "screen" > /dev/null; then
+            echo "🧹 Cleaning up system ghost files..."
+            # ลบไฟล์ขยะของ Screen
+            rm -rf ~/.screen/* 2>/dev/null
+            rm -rf /data/data/com.termux/files/usr/tmp/screens/* 2>/dev/null
+            screen -wipe > /dev/null 2>&1
+            # ลบไฟล์ Lock ของ Ubuntu ป้องกันอาการค้างเข้าไม่ได้
+            rm -f /data/data/com.termux/files/usr/var/lib/proot-distro/installed-rootfs/ubuntu/.lck 2>/dev/null
+        fi
+        
+        # [🔥 เกราะชั้นที่ 2: รัน Screen พร้อมระบบ Auto-fit 🔥]
+        if ! screen -list | grep -q "work1"; then
+            echo "🚀 Creating session 'work1' and entering Ubuntu..."
+            screen -A -S work1 proot-distro login ubuntu
+        else
+            echo "🔄 Joining existing session (Auto-fit)..."
+            screen -A -x work1
+        fi
+    else
+        echo "📱 Additional Session Detected"
+        echo "----------------------------------------"
+        echo "💻 Windows SSH Command:"
+        echo "ssh -L 18789:127.0.0.1:18789 -L 18790:127.0.0.1:18790 $USER_NAME@$IP_ADDR -p 8022"
+        echo "----------------------------------------"
+        if [ -n "$OC_TOKEN" ]; then
+            echo "🔗 Link: http://localhost:18789/#token=$OC_TOKEN"
+        fi
+        echo "----------------------------------------"
+        echo "💬 To attach screen, type: screen -A -x work1"
+        echo "----------------------------------------"
+    fi
+
+else
+    # --- กรณี SSH เข้ามาจากภายนอก ---
+    echo "💻 SSH Session: Connected successfully."
+    echo "----------------------------------------"
+    
+    # เช็คสถานะ OpenClaw ใน Ubuntu (ดัก Error กรณีตรวจสอบล้มเหลว)
+    OC_STATUS=$(proot-distro login ubuntu -- sh -c "pgrep -f openclaw" 2>/dev/null)
+    
+    if [ -n "$OC_STATUS" ]; then
+        echo "🟢 OpenClaw Status: RUNNING"
+        echo "🔗 Dashboard: http://localhost:18789/#token=$OC_TOKEN"
+    else
+        echo "🔴 OpenClaw Status: NOT RUNNING"
+    fi
+    
+    echo "----------------------------------------"
+    echo "🛠️  Manage Sessions:"
+    echo "1. Sync & Fit Screen: screen -A -x work1"
+    echo "2. Enter Ubuntu (New): proot-distro login ubuntu"
+    echo "----------------------------------------"
+    echo "💡 Tip: If screen is still small, press 'Ctrl+a' then 'F'"
+    echo "----------------------------------------"
+fi
