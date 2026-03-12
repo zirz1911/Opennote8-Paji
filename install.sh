@@ -133,6 +133,23 @@ fi
 
 ok "STEP 5 เสร็จ — Openclaw ติดตั้งสำเร็จ 🎉"
 
+# ─────────────────────────────────────────────────────────────
+# STEP 6: ตั้ง AutoRun
+# ─────────────────────────────────────────────────────────────
+log "STEP 6: ตั้ง AutoRun..."
+
+REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# Ubuntu side — append bashrc.ubuntu.1.txt ใน Ubuntu
+proot-distro login ubuntu -- bash -c "cat '${REPO_DIR}/bashrc.ubuntu.1.txt' >> ~/.bashrc"
+ok "Ubuntu ~/.bashrc อัปเดตแล้ว (จะรัน openclaw gateway อัตโนมัติ)"
+
+# Termux side — overwrite ~/.bashrc ด้วย bashrc.termux.1.txt
+cat "${REPO_DIR}/bashrc.termux.1.txt" > ~/.bashrc
+ok "Termux ~/.bashrc อัปเดตแล้ว (จะเข้า Ubuntu อัตโนมัติเมื่อเปิด Termux)"
+
+ok "STEP 6 เสร็จ — AutoRun พร้อมแล้ว 🚀"
+
 DEVICE_IP=$(ifconfig 2>/dev/null | grep 'inet ' | grep -v 127.0.0.1 | awk '{print $2}' | head -1)
 DEVICE_USER=$(whoami)
 

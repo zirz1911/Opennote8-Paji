@@ -1,0 +1,2 @@
+export NODE_OPTIONS="-r /root/hijack.js"
+openclaw gateway --verbose
