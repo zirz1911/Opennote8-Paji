@@ -149,7 +149,11 @@ echo -e "  ${CYAN}เข้า Ubuntu:${NC}"
 echo -e "  ${YELLOW}proot-distro login ubuntu${NC}"
 echo ""
 
-# รอ 3 วิ แล้วเข้า Ubuntu เลย
-echo -e "${CYAN}▶ เข้า Ubuntu อัตโนมัติใน 3 วินาที... (Ctrl+C เพื่อยกเลิก)${NC}"
-sleep 3
-proot-distro login ubuntu
+echo -e "${CYAN}══ copy คำสั่งนี้ไปรันบนคอม ══${NC}"
+echo ""
+echo -e "  ${YELLOW}ssh ${DEVICE_USER}@${DEVICE_IP} -p 8022${NC}"
+echo ""
+echo -e "${CYAN}══ แล้วพิมพ์คำสั่งนี้เพื่อเข้า Ubuntu ══${NC}"
+echo ""
+echo -e "  ${YELLOW}proot-distro login ubuntu${NC}"
+echo ""
